@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waikato Progress Indicators | KPI Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg: #F3F6F4;
+    --bg-alt: #EBEFEC;
+    --card: #FFFFFF;
+    --ink: #16241F;
+    --ink-soft: #57685F;
+    --ink-faint: #8B9990;
+    --line: #E2E8E3;
+
+    --economy: #B8722E;
+    --economy-soft: #FBF1E5;
+    --economy-line: #E6C79A;
+
+    --society: #6A4C93;
+    --society-soft: #F2EDF7;
+    --society-line: #CBB9DE;
+
+    --environment: #2F7A5C;
+    --environment-soft: #E9F4EE;
+    --environment-line: #A9D2BE;
+
+    --good: #1E8E5A;
+    --good-soft: #E5F5EC;
+    --bad: #C2493B;
+    --bad-soft: #FBEAE7;
+
+    --info-icon-url: url("data:image/png;base64,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");
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(22,36,31,0.04), 0 6px 20px rgba(22,36,31,0.06);
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3, .display{
+    font-family: 'Manrope', 'Inter', sans-serif;
+  }
+
+  ::selection{ background: #CDE3D6; }
+
+  /* ---------- Header ---------- */
+  .topbar{
+    background: linear-gradient(180deg, #182A22 0%, #1F3529 100%);
+    color: #F3F6F4;
+    padding: 34px 40px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .topbar::after{
+    content:"";
+    position: absolute;
+    right: -60px; top: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(154,196,163,0.16), transparent 70%);
+  }
+  .topbar-inner{
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 18px;
+    position: relative;
+    z-index: 1;
+  }
+  .eyebrow{
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #9AC4A3;
+    margin: 0 0 8px;
+  }
+  .topbar h1{
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .topbar p.sub{
+    margin: 0;
+    color: #C4D3CA;
+    font-size: 14px;
+    max-width: 560px;
+    line-height: 1.5;
+  }
+  .as-of{
+    text-align: right;
+    font-size: 12.5px;
+    color: #AFC2B6;
+  }
+  .as-of strong{
+    display:block;
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    max-width: 1400px;
+    margin: -22px auto 0;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  .controls-bar{
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .tabs{
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tab{
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .15s ease;
+    display:flex; align-items:center; gap:7px;
+  }
+  .tab .dot{ width:7px; height:7px; border-radius:50%; background: var(--ink-faint); }
+  .tab:hover{ border-color: var(--ink-faint); }
+  .tab.active{ background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tab.active .dot{ background: #fff; }
+  .tab[data-theme="Economy"].active{ background: var(--economy); border-color: var(--economy); }
+  .tab[data-theme="Society"].active{ background: var(--society); border-color: var(--society); }
+  .tab[data-theme="Environment"].active{ background: var(--environment); border-color: var(--environment); }
+
+  .search-wrap{
+    position: relative;
+    min-width: 220px;
+  }
+  .search-wrap input{
+    width: 100%;
+    padding: 9px 14px 9px 34px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+  }
+  .search-wrap input:focus{ border-color: var(--ink-faint); }
+  .search-wrap svg{
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; color: var(--ink-faint);
+  }
+
+  /* ---------- Legend / summary strip ---------- */
+  .summary-strip{
+    max-width: 1400px;
+    margin: 18px auto 0;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .summary-card{
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-left: 5px solid var(--ink);
+  }
+  .summary-card[data-theme="Economy"]{ border-left-color: var(--economy); }
+  .summary-card[data-theme="Society"]{ border-left-color: var(--society); }
+  .summary-card[data-theme="Environment"]{ border-left-color: var(--environment); }
+  .summary-card .num{
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+  }
+  .summary-card .lbl{
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.35;
+  }
+  .summary-card .lbl b{ display:block; color: var(--ink); font-size: 13px; }
+
+  /* ---------- Theme sections ---------- */
+  .theme-section{
+    max-width: 1400px;
+    margin: 30px auto 0;
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+  }
+  .theme-flag{
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    border-radius: 12px 0 0 12px;
+    padding: 18px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .theme-flag span.count{
+    display:block;
+    writing-mode: horizontal-tb;
+    transform: none;
+    margin-top: 8px;
+    font-size: 11px;
+    opacity: .85;
+    font-weight: 600;
+  }
+  .theme-section[data-theme="Economy"] .theme-flag{ background: var(--economy); }
+  .theme-section[data-theme="Society"] .theme-flag{ background: var(--society); }
+  .theme-section[data-theme="Environment"] .theme-flag{ background: var(--environment); }
+
+  .theme-body{
+    flex: 1;
+    background: var(--bg-alt);
+    border-radius: 0 12px 12px 0;
+    padding: 20px;
+  }
+  .theme-section[data-theme="Economy"] .theme-body{ background: var(--economy-soft); }
+  .theme-section[data-theme="Society"] .theme-body{ background: var(--society-soft); }
+  .theme-section[data-theme="Environment"] .theme-body{ background: var(--environment-soft); }
+
+  .theme-heading{
+    display:flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .theme-heading h2{
+    font-size: 17px;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .theme-heading .theme-desc{
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .card-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  /* ---------- KPI Card ---------- */
+  .kpi-card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 15px 16px 16px;
+    box-shadow: var(--shadow);
+    transition: transform .15s ease, box-shadow .15s ease;
+    position: relative;
+  }
+  .kpi-card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(22,36,31,0.06), 0 14px 28px rgba(22,36,31,0.10);
+  }
+  .kpi-head{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 3px;
+  }
+  .kpi-name{
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.3;
+    min-height: 17px;
+  }
+  .kpi-actions{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .kpi-link{
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 2px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .kpi-link:hover{ color: var(--ink); }
+  .kpi-info{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    cursor: help;
+  }
+  .kpi-info-icon{
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    background-color: var(--ink-soft);
+    -webkit-mask-image: var(--info-icon-url);
+    mask-image: var(--info-icon-url);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    transition: background-color .15s ease;
+  }
+  .kpi-info:hover .kpi-info-icon,
+  .kpi-info:focus .kpi-info-icon{ background-color: var(--ink); }
+  .kpi-info-tooltip{
+    position: absolute;
+    top: calc(100% + 8px);
+    right: -8px;
+    width: 220px;
+    background: #16241F;
+    color: #F3F6F4;
+    font-size: 11px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.5;
+    padding: 10px 12px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(22,36,31,0.25);
+    white-space: pre-line;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .kpi-info:hover .kpi-info-tooltip,
+  .kpi-info:focus .kpi-info-tooltip{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .kpi-info-tooltip::after{
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    right: 10px;
+    border: 6px solid transparent;
+    border-bottom-color: #16241F;
+  }
+  .kpi-desc{
+    font-size: 11px;
+    font-style: italic;
+    color: var(--ink-faint);
+    line-height: 1.35;
+    margin: 0 0 0px;
+    min-height: 45px;
+  }
+  .kpi-bottom{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 0;
+  }
+  .kpi-value{
+    grid-column: 1;
+    grid-row: 1;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .kpi-badge-cell{
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .kpi-classification{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 9px 4px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    cursor: default;
+  }
+  .kpi-classification.improving{ color: var(--good); background: var(--good-soft); }
+  .kpi-classification.deteriorating{ color: var(--bad); background: var(--bad-soft); }
+  .kpi-classification.little-change{ color: #3E6382; background: #EAF1F6; }
+  .kpi-classification.uncertain{ color: #8A6D1F; background: #F6EFDC; }
+
+  .kpi-trend-period{
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    align-self: start;
+    margin-top: 0;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--ink-faint);
+    text-align: right;
+  }
+
+  .kpi-year-note{
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    margin-top: 0px;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Progress classification popover ---------- */
+  .progress-popover{
+    position: fixed;
+    width: 340px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 14px 36px rgba(22,36,31,0.20);
+    padding: 14px 16px 12px;
+    z-index: 60;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s ease, transform .15s ease, visibility .15s;
+    pointer-events: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .progress-popover.visible{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .progress-popover .pp-title{
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .progress-popover .pp-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 11.5px;
+  }
+  .progress-popover .pp-row:last-of-type{ border-bottom: none; }
+  .progress-popover .pp-label{ color: var(--ink-faint); font-weight: 600; flex-shrink: 0; }
+  .progress-popover .pp-value{ color: var(--ink); text-align: right; font-weight: 600; }
+  .progress-popover .pp-note{
+    font-size: 10.5px;
+    font-style: italic;
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .progress-popover .pp-chart-label{
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 10px;
+  }
+  .progress-popover .pp-chart{
+    height: 150px;
+    margin-top: 6px;
+  }
+  .progress-popover .pp-legend{
+    display: flex;
+    gap: 14px;
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--ink-faint);
+  }
+  .progress-popover .pp-legend span{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .progress-popover .pp-legend .swatch{
+    width: 14px;
+    height: 0;
+    border-top: 2px solid currentColor;
+    display: inline-block;
+  }
+  .progress-popover .pp-legend .swatch.dashed{
+    border-top-style: dashed;
+  }
+
+  footer{
+    max-width: 1400px;
+    margin: 34px auto 40px;
+    padding: 0 40px;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .empty-state{
+    text-align:center;
+    padding: 50px 10px;
+    color: var(--ink-faint);
+    font-size: 13px;
+    display:none;
+  }
+
+  @media (max-width: 1180px){
+    .card-grid{ grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 860px){
+    .card-grid{ grid-template-columns: repeat(2, 1fr); }
+    .summary-strip{ grid-template-columns: 1fr; }
+    .topbar{ padding: 28px 20px; }
+    .controls, .theme-section, footer{ padding: 0 20px; }
+  }
+  @media (max-width: 560px){
+    .card-grid{ grid-template-columns: 1fr; }
+    .theme-flag{ writing-mode: horizontal-tb; transform:none; padding: 8px; border-radius: 12px 12px 0 0; }
+    .theme-section{ flex-direction: column; }
+    .theme-body{ border-radius: 0 0 12px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <p class="eyebrow">Waikato Regional Council · Progress Monitoring</p>
+      <h1>Waikato Progress Indicators | 2024 </h1>
+      <p class="sub">32 indicators tracking Economy, Society and Environment across the region.</p>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="controls-bar">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-theme="all"><span class="dot"></span>All indicators</button>
+      <button class="tab" data-theme="Economy"><span class="dot"></span>Economy</button>
+      <button class="tab" data-theme="Society"><span class="dot"></span>Society</button>
+      <button class="tab" data-theme="Environment"><span class="dot"></span>Environment</button>
+    </div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search indicators (e.g. crime, income, recycling)">
+    </div>
+  </div>
+</div>
+
+<div class="summary-strip" id="summaryStrip"></div>
+
+<div id="sections"></div>
+
+<div class="empty-state" id="emptyState">No indicators match your search.</div>
+
+<footer>
+  <span>Source: Waikato Progress Indicators dataset, 2001&ndash;2024.</span>
+  <span>Green / amber / blue / red reflect a 10-year regression trend classification, not a simple year-on-year change.</span>
+</footer>
+
+<script>
+const RAW_DATA = [{"theme":"Economy","name":"Building activity","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[2472.924537990427,2547.7429382470905,3479.7014835370805,3866.6562816476344,4793.27676726424,4217.632421630076,4352.198324604393,3564.726194079105,2792.7768147362112,2856.2945597168314,2264.7817798668407,2585.2880629503893,2806.3536645671197,3138.958761452543,3808.075765546004,4175.291910765116,4397.284422972802,4760.513025884257,5343.799879060439,5227.236917554291,6272.001971247047,6288.196394433557,4582.995049551257,3419.7065295678544],"unit":"currency_m","decimals":0,"good":"up","definition":"Real value of new building consents issued.","datasetInfo":"Indicator: Economy\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"Theil-Sen (robust)","desiredDirection":"Up is good","n":10,"slope":276.650831527163,"intercept":-554024.600231388,"materialityPct":0.86800288689918,"materialityResult":"Material","consistencyPct":0.666666666666667,"consistencyResult":"Inconsistent - check underlying data","assessmentPeriod":"10-year trend, 2015-2024","latestValue":3419.70652956785,"classification":"→ Little or no clear change","qualityNote":"Direction not consistent across observations | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Economy","name":"Employment","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.622,0.649,0.655,0.657,0.6559999999999999,0.667,0.6709999999999999,0.6679999999999999,0.647,0.636,0.6459999999999999,0.625,0.636,0.642,0.642,0.652,0.69,0.7,0.68,0.6709999999999999,0.672,0.6709999999999999,0.664,0.652],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of total working-age population who are employed.","datasetInfo":"Indicator: Economy\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":10,"slope":-8.48484848484836e-05,"intercept":0.840751515151513,"materialityPct":-0.0131661442006268,"materialityResult":"Not material","consistencyPct":0.6,"consistencyResult":"Inconsistent - check underlying data","assessmentPeriod":"10-year trend, 2015-2024","latestValue":0.652,"classification":"→ Little or no clear change","qualityNote":"Change is below the materiality threshold | Direction not consistent across observations | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Economy","name":"Income","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[1434.7894115918116,1496.8144739294416,1529.6327095123743,1470.902093610556,1616.7116460434645,1674.87078,1724.5903529411764,1763.7737983034874,1726.8136817761333,1633.2574795268426,1550.0350043215215,1627.5632962328768,1649.6434353741497,1580.3499330543934,1707.6196499999999,1923.1306390041493,1905.453556280587,2099.1106084105463,2127.3959833389977,2079.9088826911393,2130.1890194718553,2119.991323530445,2149.268557722252,2120],"unit":"currency","decimals":0,"good":"up","definition":"Real median weekly household income.","datasetInfo":"Indicator: Economy\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":10,"slope":38.8656093928005,"intercept":-76452.8913467155,"materialityPct":0.79201030143877,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":2120,"classification":"↑ Improving","qualityNote":"Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Economy","name":"Regional GDP","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[50545.599022004884,53605.57724550898,51352.032608695656,53436.504705882355,53955.72613636364,56250.13058035715,59406.70021413277,59219.5967413442,60627.858424725826,58341.53815659068,58721.33651096282,61580.38978240302,59841.56480605487,61951.868983957225,61453.886792452824,61276.66725663717,61795.67579127459,64640.94187026116,67283.72568578552,67450.47477982387,68332.26014319809,69402.95964125561,70037.72514204544,68598],"unit":"currency","decimals":0,"good":"up","definition":"Real Gross Domestic Product (GDP) per capita.","datasetInfo":"Indicator: Economy\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":10,"slope":1060.00937714265,"intercept":-2074661.7054293,"materialityPct":1.0889192285983,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":68598,"classification":"↑ Improving","qualityNote":"Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Economy","name":"Water use","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.6722275385433281,0.6722275385433281,0.6722275385433281,0.6722275385433281,0.6722275385433281,0.6722275385433281,0.6722275385433281,0.6499096225412014,0.64461456671983,0.6870600744284956,0.7177830940988836,0.7643965975544924,0.8707123870281765,0.8585167464114833,0.862,0.86481658692185,0.852,0.858,0.8485538296732726,0.8285216925549008,0.898237814675951,0.902019282271023,0.911644349223353,0.8854740224959831],"unit":"percent","decimals":1,"good":"down","definition":"Water allocation as a percentage of primary allocatable water (Waikato River).","datasetInfo":"Indicator: Economy\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Down is good","n":10,"slope":0.00539295913235736,"intercept":-10.0199542100141,"materialityPct":0.58391579548296,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":0.885474022495983,"classification":"↓ Deteriorating","qualityNote":"6 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Society","name":"Community engagement","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.62,0.62,0.62,0.62,0.62,0.62,0.604,0.588,0.572,0.5559999999999999,0.5399999999999999,0.5239999999999999,0.5079999999999999,0.4919999999999999,0.47599999999999987,0.46,0.41000000000000003,0.36,0.365,0.37,0.33999999999999997,0.31,0.32999999999999996,0.35],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of people who agree the public can influence Council decisions.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":5,"slope":-0.0135,"intercept":27.64,"materialityPct":-0.72,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2016-2024","latestValue":0.35,"classification":"↓ Deteriorating","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2024},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,false]},{"theme":"Society","name":"Community pride","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.7,0.7,0.7,0.7,0.7,0.7,0.698,0.696,0.694,0.692,0.69,0.688,0.6859999999999999,0.6839999999999999,0.6819999999999999,0.68,0.65,0.62,0.645,0.67,0.655,0.64,0.635,0.63],"unit":"percent","decimals":1,"good":"up","definition":"People's sense of pride in the way their city/town looks and feels.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":5,"slope":-0.004,"intercept":8.72800000000001,"materialityPct":-0.533333333333333,"materialityResult":"Material","consistencyPct":0.8,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2016-2024","latestValue":0.63,"classification":"↓ Deteriorating","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2024},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,false]},{"theme":"Society","name":"Crime","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[832.406886187421,840.614269026647,780.4915089503372,720.5681383039409,769.8114543719012,833.5562231425242,797.8745389165578,760.5563190023129,828.8512441042548,802.9130999141754,806.9490777907191,739.0089665342235,722.2710607720924,652.6048363217099,582.5771738634809,625.0027825390112,624.4771461390087,588.7549520157618,660.5674556089843,627.6932440657334,689.1112584644443,842.4877707896576,855.8569090483985,861.1376216835274],"unit":"rate","decimals":0,"good":"down","definition":"Rates of victimisation per 10,000 population.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"Theil-Sen (robust)","desiredDirection":"Down is good","n":10,"slope":32.9791609299125,"intercept":-65957.2851481209,"materialityPct":1.06552258474598,"materialityResult":"Material","consistencyPct":0.911111111111111,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":861.137621683527,"classification":"↓ Deteriorating","qualityNote":"14 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false]},{"theme":"Society","name":"Cultural respect","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.51,0.51,0.51,0.51,0.51,0.51,0.502,0.494,0.486,0.478,0.47,0.46199999999999997,0.45399999999999996,0.44599999999999995,0.43799999999999994,0.43,0.42,0.41,0.43999999999999995,0.47,0.43,0.39,0.39,0.39],"unit":"percent","decimals":1,"good":"up","definition":"Level of agreement that having people with different lifestyles and cultures makes area a better place to live.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":4,"slope":-0.003,"intercept":6.48199999999999,"materialityPct":-0.225,"materialityResult":"Material","consistencyPct":0.75,"consistencyResult":"Consistent","assessmentPeriod":"7-year trend, 2016-2022","latestValue":0.39,"classification":"? Uncertain","qualityNote":"19 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2022},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,true]},{"theme":"Society","name":"Educational attainment","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.6420938235826843,0.6420938235826843,0.6420938235826843,0.6420938235826843,0.6420938235826843,0.6420938235826843,0.6420938235826843,0.6420938235826843,0.6420938235826843,0.664,0.695,0.72,0.736,0.7609999999999999,0.7759999999999999,0.7959999999999999,0.7859999999999999,0.792,0.784,0.8,0.7859999999999999,0.7340000000000001,0.706,0.706],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of school leavers with NCEA level 2 or above.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":9,"slope":-0.00763333333333332,"intercept":16.1850333333333,"materialityPct":-0.649645390070921,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2015-2023","latestValue":0.706,"classification":"↓ Deteriorating","qualityNote":"9 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2023},"imputed":[true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true]},{"theme":"Society","name":"Housing affordability","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.205,0.205,0.205,0.205,0.205,0.205,0.205,0.18600000000000003,0.205,0.177,0.183,0.201,0.172,0.203,0.18899999999999997,0.204,0.19899999999999998,0.20199999999999999,0.196,0.20600000000000002,0.19899999999999998,0.211,0.223,0.21899999999999997],"unit":"percent","decimals":1,"good":"down","definition":"Ratio of housing costs to household disposable income.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Down is good","n":9,"slope":0.00284264705882353,"intercept":-5.535825,"materialityPct":0.752465397923876,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":0.219,"classification":"↓ Deteriorating","qualityNote":"7 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false]},{"theme":"Society","name":"Income inequality","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.3510761931,0.3510761931,0.3510761931,0.3510761931,0.3510761931,0.3510761931,0.3510761931,0.4008313489,0.3153999665,0.3554997794,0.3927148314,0.412406151,0.341751201,0.3752965923,0.4439652037,0.4129136022,0.4165855075,0.3948945953,0.4100754469,0.3816909665,0.3616611138,0.3545802851,0.3912185653,0.4067566492],"unit":"index","decimals":3,"good":"down","definition":"Gini coefficient - a measure of the concentration of income within the region.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Down is good","n":10,"slope":-0.00560517142848485,"intercept":11.7170778933752,"materialityPct":-0.564374210397991,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":0.4067566492,"classification":"↑ Improving","qualityNote":"6 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Society","name":"Life expectancy","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[78.5,78.76,79.02000000000001,79.28000000000002,79.54000000000002,79.80000000000001,79.96428571428572,80.12857142857143,80.29285714285714,80.45714285714286,80.62142857142857,80.78571428571428,80.95,81.03,81.11,81.19,81.27,81.35,81.35,81.35,81.35,81.35,81.35,81.35],"unit":"years","decimals":1,"good":"up","definition":"Life expectancy at birth.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":1,"slope":"n/a","intercept":"n/a","materialityPct":"n/a","materialityResult":"n/a","consistencyPct":"n/a","consistencyResult":"n/a","assessmentPeriod":"n/a - insufficient data","latestValue":81.35,"classification":"? Uncertain","qualityNote":"20 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2018,"lastActualYear":2018},"imputed":[false,true,true,true,true,false,true,true,true,true,true,true,false,true,true,true,true,false,true,true,true,true,true,true]},{"theme":"Society","name":"Life satisfaction","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.9,0.9,0.9,0.9,0.9,0.9,0.894,0.888,0.882,0.876,0.87,0.864,0.858,0.852,0.846,0.84,0.855,0.87,0.875,0.88,0.87,0.86,0.825,0.79],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of people who rate their overall quality of life positively.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":5,"slope":-0.00549999999999999,"intercept":11.958,"materialityPct":-0.488888888888889,"materialityResult":"Material","consistencyPct":0.8,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2016-2024","latestValue":0.79,"classification":"↓ Deteriorating","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2024},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,false]},{"theme":"Society","name":"Perceived health","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.9,0.9,0.9,0.9,0.9,0.9,0.894,0.888,0.882,0.876,0.87,0.864,0.858,0.852,0.846,0.84,0.815,0.79,0.79,0.79,0.795,0.8,0.76875,0.7375],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of people who rate their overall health good, very good or excellent.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":5,"slope":-0.00974999999999999,"intercept":20.4865,"materialityPct":-0.760975609756098,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2016-2024","latestValue":0.7375,"classification":"↓ Deteriorating","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2024},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,false]},{"theme":"Society","name":"Perceptions of safety","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.6,0.6,0.6,0.6,0.6,0.6,0.605,0.61,0.615,0.62,0.625,0.63,0.635,0.64,0.645,0.65,0.645,0.64,0.63,0.62,0.625,0.63,0.645,0.66],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of adults who feel safe walking alone in their neighbourhood after dark.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":5,"slope":0.0005,"intercept":-0.370000000000001,"materialityPct":0.1,"materialityResult":"Material","consistencyPct":0.8,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2016-2024","latestValue":0.66,"classification":"↑ Improving","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2024},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,false]},{"theme":"Society","name":"Physical activity","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.61,0.61,0.61,0.61,0.61,0.61,0.596,0.582,0.568,0.5539999999999999,0.5399999999999999,0.5259999999999999,0.5119999999999999,0.4979999999999999,0.4839999999999999,0.47,0.435,0.4,0.375,0.35,0.38,0.41,0.36,0.31],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of people who say they were physically active on five or more of the past seven days.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":5,"slope":-0.0155,"intercept":31.698,"materialityPct":-0.775,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2016-2024","latestValue":0.31,"classification":"↓ Deteriorating","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2024},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,false]},{"theme":"Society","name":"Public transport","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[4.180238870792617,4.338510980182111,4.456751054852321,4.915474642392717,5.068175971186005,5.493387589013225,7.2992700729927,9.088645418326694,11.116576487948842,10.96023278370514,10.397320872274143,10.596443653618032,10.181097503532737,10.1081868640148,9.81986202216693,9.022674469964665,8.57745806451613,8.383713204373421,8.283647447819797,7.131238670694864,6.52863382528919,4.794231608169739,6.476468653250775,7.803131159969674],"unit":"rate1","decimals":1,"good":"up","definition":"Passenger transport boardings per resident per annum.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"Theil-Sen (robust)","desiredDirection":"Up is good","n":10,"slope":-0.445216405448535,"intercept":907.157920107212,"materialityPct":-0.797302491221166,"materialityResult":"Material","consistencyPct":0.888888888888889,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":7.80313115996967,"classification":"↓ Deteriorating","qualityNote":"Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Society","name":"Road safety","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[5074.122236671002,5074.122236671002,5074.122236671002,5074.122236671002,5194.237200926164,4478.636826042726,5562.5471935565065,4738.545816733068,4188.391539596655,4020.368574199806,3862.9283489096574,3556.346381969158,2567.1219971738105,3092.0444033302497,3784.2117168061523,3683.745583038869,3595.6989247311826,3669.049621530698,3455.2593511056,3129.909365558912,3091.344236138811,3700.178465199286,3392.0278637770894,3392.0278637770894],"unit":"currency","decimals":0,"good":"down","definition":"Social costs of road injury crashes per capita.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Down is good","n":9,"slope":-51.1214399798588,"intercept":106714.345666878,"materialityPct":-0.590259365968463,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2015-2023","latestValue":3392.02786377709,"classification":"↑ Improving","qualityNote":"1 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2023},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true]},{"theme":"Society","name":"Social connectedness","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.63,0.63,0.63,0.63,0.63,0.63,0.632,0.634,0.636,0.638,0.64,0.642,0.644,0.646,0.648,0.65,0.635,0.62,0.5900000000000001,0.56,0.565,0.57,0.53,0.49],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of people who feel a sense of community in their neighbourhood.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":5,"slope":-0.0185,"intercept":37.948,"materialityPct":-0.925,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2016-2024","latestValue":0.49,"classification":"↓ Deteriorating","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2024},"imputed":[true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,true,false,true,false,true,false,true,false]},{"theme":"Society","name":"Te Reo Māori speakers","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.06361852367454421,0.06251281470144597,0.06140710572834773,0.060301396755249495,0.05919568778215126,0.05808997880905302,0.057332057382953744,0.05657413595685447,0.05581621453075519,0.05505829310465592,0.05430037167855664,0.053542450252457366,0.052784528826358076,0.053961749057917556,0.055138969289477036,0.056316189521036515,0.057493409752595995,0.05867062998415547,0.05956634814426213,0.06046206630436879,0.06135778446447545,0.06225350262458211,0.06314922078468876,0.06314922078468876],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of Te Reo Māori speakers in the total population.","datasetInfo":"Indicator: Society\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":2,"slope":0.000895718160106659,"intercept":-1.74888861711108,"materialityPct":1,"materialityResult":"Material","consistencyPct":0,"consistencyResult":"Inconsistent - check underlying data","assessmentPeriod":"6-year trend, 2018-2023","latestValue":0.0631492207846888,"classification":"? Uncertain","qualityNote":"19 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Direction not consistent across observations | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2018,"lastActualYear":2023},"imputed":[false,true,true,true,true,false,true,true,true,true,true,true,false,true,true,true,true,false,true,true,true,true,false,true]},{"theme":"Society","name":"Voter turnout","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.38609599886010615,0.38609599886010615,0.38609599886010615,0.38609599886010615,0.38609599886010615,0.38609599886010615,0.38609599886010615,0.39800485668320346,0.40991371450630076,0.421822572329398,0.41452165742735125,0.4072207425253045,0.3999198276232578,0.39230439931118055,0.3846889709991033,0.3770735426870261,0.3963228539646926,0.41557216524235907,0.4348214765200255,0.41660906530178954,0.39839665408355357,0.3801842428653176,0.3801842428653176,0.3801842428653176],"unit":"percent","decimals":1,"good":"up","definition":"Average voter turnout in local and regional council elections.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":3,"slope":0.000518450029715252,"intercept":-0.649390855970972,"materialityPct":0.053866865389285,"materialityResult":"Material","consistencyPct":0.666666666666667,"consistencyResult":"Inconsistent - check underlying data","assessmentPeriod":"7-year trend, 2016-2022","latestValue":0.380184242865318,"classification":"? Uncertain","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Direction not consistent across observations | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2022},"imputed":[true,true,true,true,true,true,false,true,true,false,true,true,false,true,true,false,true,true,false,true,true,false,true,true]},{"theme":"Environment","name":"Air quality","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[17,17,27,50,38,47,20,28,38,22,20,17,12,11,10,5,12,2,5,13,39,15,18,24],"unit":"count","decimals":0,"good":"down","definition":"Exceedances of the regional guideline for particulate matter.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"Theil-Sen (robust)","desiredDirection":"Down is good","n":10,"slope":1.85714285714286,"intercept":-3738,"materialityPct":0.451737451737452,"materialityResult":"Material","consistencyPct":0.777777777777778,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":24,"classification":"↓ Deteriorating","qualityNote":"Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Environment","name":"Coastal ecosystem health","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.4030769230769231,0.38230769230769235,0.3792307692307692,0.38446153846153847,0.41219999999999996,0.39726666666666666,0.3943333333333333,0.3596428571428571,0.40404478780830483,0.38586419462613525,0.40385026737967905,0.42481281818181815,0.42481281818181815],"unit":"index","decimals":2,"good":"up","definition":"Traits Based Index calculated for estuarine monitoring sites.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":9,"slope":0.00205437385690107,"intercept":-3.75150565446101,"materialityPct":0.252186599365667,"materialityResult":"Material","consistencyPct":0.888888888888889,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2015-2023","latestValue":0.424812818181818,"classification":"↑ Improving","qualityNote":"12 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2023},"imputed":[true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,true]},{"theme":"Environment","name":"Environmental attitudes","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.7722,0.7722,0.7722,0.7722,0.7928999999999999,0.8135999999999999,0.8342999999999998,0.855,0.862,0.869,0.876,0.883,0.8899999999999999,0.8866666666666666,0.8833333333333333,0.88,0.8766666666666667,0.8733333333333334,0.87,0.8566666666666667,0.8433333333333334,0.83,0.83,0.83],"unit":"percent","decimals":1,"good":"up","definition":"New Ecological Paradigm - percentage pro- or mid-ecological.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":3,"slope":-0.00833333333333334,"intercept":17.685,"materialityPct":-1,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"7-year trend, 2016-2022","latestValue":0.83,"classification":"? Uncertain","qualityNote":"18 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2016,"lastActualYear":2022},"imputed":[true,true,true,false,true,true,true,false,true,true,true,true,false,true,true,false,true,true,false,true,true,false,true,true]},{"theme":"Environment","name":"Greenhouse gases","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[15.876,15.876,15.876,15.876,15.876,15.876,15.876,17.593,16.285,15.344,15.443,16.743,15.769,15.638,15.379,15.045,15.172,15.5,16.362,16.009,16.679,14.511,13.738,13.738],"unit":"tonnes","decimals":1,"good":"down","definition":"Annual total greenhouse gas emissions.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Down is good","n":9,"slope":-0.0773833333333334,"intercept":171.614172222222,"materialityPct":-0.21049529638445,"materialityResult":"Material","consistencyPct":0.888888888888889,"consistencyResult":"Consistent","assessmentPeriod":"9-year trend, 2015-2023","latestValue":13.738,"classification":"↑ Improving","qualityNote":"7 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2023},"imputed":[true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true]},{"theme":"Environment","name":"Indigenous vegetation","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.2709108410861273,0.27088608756622357,0.27086133404631985,0.2708365805264161,0.2708118270065124,0.2707870734866087,0.2707623199667049,0.2707623199667049,0.2707623199667049,0.2707623199667049,0.2707623199667049,0.2707623199667049,0.2707623199667049],"unit":"percent","decimals":1,"good":"up","definition":"Extent of indigenous vegetation on land.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":1,"slope":"n/a","intercept":"n/a","materialityPct":"n/a","materialityResult":"n/a","consistencyPct":"n/a","consistencyResult":"n/a","assessmentPeriod":"n/a - insufficient data","latestValue":0.270762319966705,"classification":"? Uncertain","qualityNote":"22 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2018,"lastActualYear":2018},"imputed":[true,true,true,true,true,true,true,true,true,true,true,false,true,true,true,true,true,false,true,true,true,true,true,true]},{"theme":"Environment","name":"Recycling","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.662,0.662,0.662,0.662,0.662,0.662,0.662,0.662,0.6885,0.715,0.709,0.703,0.703,0.703,0.703,0.703,0.703,0.703,0.703,0.703,0.703,0.703,0.703,0.703],"unit":"percent","decimals":1,"good":"up","definition":"Self-reported prevalence of household recycling.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":0,"slope":"n/a","intercept":"n/a","materialityPct":"n/a","materialityResult":"n/a","consistencyPct":"n/a","consistencyResult":"n/a","assessmentPeriod":"n/a - insufficient data","latestValue":"n/a","classification":"? Uncertain","qualityNote":"21 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":0,"lastActualYear":0},"imputed":[true,true,true,true,true,true,true,false,true,false,true,false,true,true,true,true,true,true,true,true,true,true,true,true]},{"theme":"Environment","name":"Residential expansion onto highly productive land","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[11976,11976,12623.666666666666,13271.333333333332,13918.999999999998,14566.666666666664,15214.33333333333,15862,16140.25,16418.5,16696.75,16975,17337.14285714286,17699.285714285717,18061.428571428576,18423.571428571435,18785.714285714294,19147.857142857152,19510,19510,19510,19510,19510,19510],"unit":"hectares","decimals":0,"good":"down","definition":"Area of highly productive land in urban and rural residential use.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Down is good","n":5,"slope":362.142857142856,"intercept":-711656.428571426,"materialityPct":1,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"5-year trend, 2015-2019","latestValue":19510,"classification":"↓ Deteriorating","qualityNote":"5 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2019},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true]},{"theme":"Environment","name":"River water quality","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.29,0.29,0.29,0.29,0.29,0.29,0.29,0.29,0.29,0.29,0.29,0.29,0.29,0.28,0.279,0.28,0.28,0.29,0.29,0.29,0.29,0.29,0.29,0.28],"unit":"percent","decimals":1,"good":"down","definition":"Percentage of water samples taken from rivers and streams deemed unsatisfactory for ecological health.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Down is good","n":10,"slope":0.000781818181818178,"intercept":-1.29298181818181,"materialityPct":0.639669421487603,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":0.28,"classification":"↓ Deteriorating","qualityNote":"9 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[true,true,true,true,true,true,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Environment","name":"Soil quality","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[0.8791208791208791,0.8791208791208791,0.8791208791208791,0.8829787234042553,0.889908256880734,0.875,0.875,0.8613138686131387,0.8263888888888888,0.8275862068965517,0.8120805369127517,0.8040540540540541,0.8157894736842105,0.8133333333333335,0.8194444444444444,0.86,0.861842105263158,0.825503355704698,0.8533333333333333,0.8675496688741723,0.8874172185430464,0.8954248366013071,0.8496732026143791,0.8516129032258064],"unit":"percent","decimals":1,"good":"up","definition":"Percentage of soil monitoring sites meeting at least five soil quality targets.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"OLS (least squares)","desiredDirection":"Up is good","n":10,"slope":0.00354606138230025,"intercept":-6.30409085469492,"materialityPct":0.420036690187308,"materialityResult":"Material","consistencyPct":1,"consistencyResult":"Consistent","assessmentPeriod":"10-year trend, 2015-2024","latestValue":0.851612903225806,"classification":"↑ Improving","qualityNote":"Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2024},"imputed":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"theme":"Environment","name":"Waste","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],"values":[222000,222000,222000,222000,222000,222000,222814.5,223629,224443.5,225258,226072.5,226887,227499,228111,228723,224732,220741,250122.33333333334,279503.6666666667,308885,308885,308885,308885,308885],"unit":"tonnes_k","decimals":0,"good":"down","definition":"Tonnage of waste to landfill per annum.","datasetInfo":"Indicator: Environment\nFrequency: Annual\nSource: To be added","source":"To be added","dashboardLink":"https://waikatoregionalcouncil.datandashboards.com/","progress":{"method":"Theil-Sen (robust)","desiredDirection":"Down is good","n":3,"slope":16032.4,"intercept":-32108627.8,"materialityPct":0.90944363768379,"materialityResult":"Material","consistencyPct":0.666666666666667,"consistencyResult":"Inconsistent - check underlying data","assessmentPeriod":"6-year trend, 2015-2020","latestValue":308885,"classification":"? Uncertain","qualityNote":"19 of 24 years in the source series (2001-2024) are imputed and excluded from analysis | Fewer than 5 actual observations in the assessment window | Direction not consistent across observations | Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)","windowStart":2015,"windowEnd":2024,"firstActualYear":2015,"lastActualYear":2020},"imputed":[true,true,true,true,true,false,true,true,true,true,true,false,true,true,false,true,false,true,true,false,true,true,true,true]}];
+
+const THEME_DESC = {
+  Economy: "Growth, income and the productive base of the region",
+  Society: "Wellbeing, safety, culture and community life",
+  Environment: "Air, water, land and the natural environment"
+};
+
+function fmtValue(ind, val){
+  if(val === null || val === undefined || isNaN(val)) return "&mdash;";
+  const d = ind.decimals;
+  switch(ind.unit){
+    case "percent":
+      return (val*100).toFixed(d) + "%";
+    case "currency":
+      return "$" + Math.round(val).toLocaleString();
+    case "currency_m":
+      return "$" + Math.round(val).toLocaleString() + "M";
+    case "tonnes_k":
+      return (val/1000).toFixed(1) + "K t";
+    case "tonnes":
+      return val.toFixed(d) + " t";
+    case "hectares":
+      return Math.round(val).toLocaleString() + " ha";
+    case "rate":
+      return Math.round(val).toLocaleString();
+    case "rate1":
+      return val.toFixed(1);
+    case "count":
+      return Math.round(val).toLocaleString();
+    case "index":
+      return val.toFixed(d);
+    case "years":
+      return val.toFixed(d) + " yrs";
+    default:
+      return val.toFixed(d);
+  }
+}
+
+function themeColor(theme){
+  return { Economy: "#B8722E", Society: "#6A4C93", Environment: "#2F7A5C" }[theme];
+}
+function themeColorSoft(theme){
+  return { Economy: "rgba(184,114,46,0.14)", Society: "rgba(106,76,147,0.14)", Environment: "rgba(47,122,92,0.14)" }[theme];
+}
+
+function cardDisplayName(name){
+  const overrides = {
+    'Residential expansion onto highly productive land': 'Residential expansion'
+  };
+  return overrides[name] || name;
+}
+
+function classificationClass(cls){
+  if(!cls) return 'uncertain';
+  if(cls.indexOf('Improving') !== -1) return 'improving';
+  if(cls.indexOf('Deteriorating') !== -1) return 'deteriorating';
+  if(cls.indexOf('Uncertain') !== -1) return 'uncertain';
+  return 'little-change';
+}
+
+function fmtSlope(ind, slope){
+  if(typeof slope !== 'number' || isNaN(slope)) return 'n/a';
+  const sign = slope >= 0 ? '+' : '\u2212';
+  const abs = Math.abs(slope);
+  switch(ind.unit){
+    case 'percent':
+      return sign + (abs*100).toFixed(2) + ' pts/yr';
+    case 'currency':
+      return sign + '$' + abs.toLocaleString(undefined,{maximumFractionDigits:0}) + '/yr';
+    case 'currency_m':
+      return sign + '$' + abs.toLocaleString(undefined,{maximumFractionDigits:0}) + 'M/yr';
+    case 'tonnes_k':
+      return sign + abs.toLocaleString(undefined,{maximumFractionDigits:0}) + ' t/yr';
+    case 'tonnes':
+      return sign + abs.toFixed(2) + ' t/yr';
+    case 'hectares':
+      return sign + abs.toLocaleString(undefined,{maximumFractionDigits:0}) + ' ha/yr';
+    case 'rate':
+      return sign + abs.toLocaleString(undefined,{maximumFractionDigits:1}) + '/yr';
+    case 'rate1':
+      return sign + abs.toFixed(2) + '/yr';
+    case 'count':
+      return sign + abs.toFixed(1) + '/yr';
+    case 'index':
+      return sign + abs.toFixed(4) + '/yr';
+    case 'years':
+      return sign + abs.toFixed(3) + ' yrs/yr';
+    default:
+      return sign + abs.toFixed(3) + '/yr';
+  }
+}
+
+function headlineValue(ind){
+  const v = ind.progress.latestValue;
+  if(typeof v !== 'number' || isNaN(v)) return '&mdash;';
+  return fmtValue(ind, v);
+}
+
+function yearNoteText(ind){
+  const p = ind.progress;
+  if(!p.n || p.n < 1 || !p.lastActualYear || typeof ind.progress.latestValue !== 'number'){
+    return 'No actual data available';
+  }
+  return `${p.lastActualYear}`;
+}
+
+function buildSummary(){
+  const strip = document.getElementById('summaryStrip');
+  ["Economy","Society","Environment"].forEach(theme=>{
+    const items = RAW_DATA.filter(d=>d.theme===theme);
+    const improving = items.filter(d=> classificationClass(d.progress.classification)==='improving').length;
+    const div = document.createElement('div');
+    div.className = 'summary-card';
+    div.dataset.theme = theme;
+    div.innerHTML = `
+      <div class="num" style="color:${themeColor(theme)}">${items.length}</div>
+      <div class="lbl"><b>${theme}</b>${improving} of ${items.length} indicators improving (10-year trend)</div>
+    `;
+    strip.appendChild(div);
+  });
+}
+
+/* ---------- Progress classification popover (hover on classification badge) ---------- */
+const progressPopoverEl = document.createElement('div');
+progressPopoverEl.id = 'progress-popover';
+progressPopoverEl.className = 'progress-popover';
+document.body.appendChild(progressPopoverEl);
+let progressChart = null;
+let popoverHideTimer = null;
+
+function buildPopoverContent(ind){
+  const p = ind.progress;
+  const STANDING_NOTE = 'Potential definitional or methodology breaks in the source series have not yet been assessed (pending client confirmation)';
+  const rawNote = p.qualityNote || '';
+  const filteredParts = rawNote.split(' | ').map(s=>s.trim()).filter(s=> s && s !== STANDING_NOTE);
+  const note = filteredParts.join(' | ').replace(/</g,'&lt;');
+  const noteHtml = note ? `<div class="pp-note">${note}</div>` : '';
+  return `
+    <div class="pp-title">${ind.name}</div>
+    <div class="pp-row"><span class="pp-label">Years covered</span><span class="pp-value">${p.assessmentPeriod}</span></div>
+    <div class="pp-row"><span class="pp-label">Estimated annual change</span><span class="pp-value">${fmtSlope(ind, p.slope)}</span></div>
+    <div class="pp-row"><span class="pp-label">Observations (n)</span><span class="pp-value">${p.n}</span></div>
+    <div class="pp-row"><span class="pp-label">Desired direction</span><span class="pp-value">${p.desiredDirection}</span></div>
+    <div class="pp-chart-label">Time series &amp; 10-year trend</div>
+    <div class="pp-chart"><canvas></canvas></div>
+    <div class="pp-legend">
+      <span><span class="swatch" style="color:${themeColor(ind.theme)}"></span> Actual values</span>
+      <span><span class="swatch dashed" style="color:${themeColor(ind.theme)}"></span> Regression trend</span>
+    </div>
+    ${noteHtml}
+  `;
+}
+
+function buildPopoverChart(ind){
+  const canvas = progressPopoverEl.querySelector('canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const color = themeColor(ind.theme);
+  const p = ind.progress;
+
+  const actualPoints = ind.years.map((y,i)=> ({ x:y, y: ind.imputed[i] ? null : ind.values[i] }));
+
+  const gradient = ctx.createLinearGradient(0,0,0,150);
+  gradient.addColorStop(0, color + '55');
+  gradient.addColorStop(1, color + '02');
+
+  let trendData = [];
+  if(typeof p.slope === 'number' && typeof p.intercept === 'number' && p.windowStart && p.windowEnd){
+    trendData = [
+      { x: p.windowStart, y: p.slope*p.windowStart + p.intercept },
+      { x: p.windowEnd,   y: p.slope*p.windowEnd + p.intercept }
+    ];
+  }
+
+  if(progressChart){ progressChart.destroy(); progressChart = null; }
+  progressChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          label: 'Actual',
+          data: actualPoints,
+          borderColor: color,
+          backgroundColor: gradient,
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 2,
+          pointHoverRadius: 4,
+          pointBackgroundColor: color,
+          spanGaps: false
+        },
+        {
+          label: 'Trend',
+          data: trendData,
+          borderColor: color,
+          borderWidth: 2,
+          borderDash: [5,4],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          spanGaps: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      scales: {
+        x: {
+          type: 'linear',
+          ticks: { color: '#8B9990', font: { size: 9 }, stepSize: 4, callback: (v)=> Math.round(v) },
+          grid: { color: '#E2E8E3' }
+        },
+        y: {
+          ticks: { color: '#8B9990', font: { size: 9 }, callback: (v)=> fmtValue(ind, v) },
+          grid: { color: '#E2E8E3' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            title: (items)=> String(items[0].parsed.x),
+            label: (ctx)=> (ctx.datasetIndex===0 ? 'Actual: ' : 'Trend: ') + fmtValue(ind, ctx.parsed.y)
+          }
+        }
+      }
+    }
+  });
+}
+
+function positionPopover(anchorEl){
+  const rect = anchorEl.getBoundingClientRect();
+  const popRect = progressPopoverEl.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let left = rect.right - popRect.width;
+  let top = rect.bottom + 8;
+  if(left < 8) left = 8;
+  if(left + popRect.width > vw - 8) left = vw - popRect.width - 8;
+  if(top + popRect.height > vh - 8) top = rect.top - popRect.height - 8;
+  if(top < 8) top = 8;
+  progressPopoverEl.style.left = left + 'px';
+  progressPopoverEl.style.top = top + 'px';
+}
+
+function showProgressPopover(ind, anchorEl){
+  clearTimeout(popoverHideTimer);
+  progressPopoverEl.innerHTML = buildPopoverContent(ind);
+  progressPopoverEl.classList.add('visible');
+  requestAnimationFrame(()=>{
+    buildPopoverChart(ind);
+    positionPopover(anchorEl);
+  });
+}
+
+function hideProgressPopover(){
+  popoverHideTimer = setTimeout(()=>{
+    progressPopoverEl.classList.remove('visible');
+  }, 80);
+}
+
+function makeCard(ind){
+  const card = document.createElement('div');
+  card.className = 'kpi-card';
+  card.dataset.name = ind.name.toLowerCase();
+  card.dataset.theme = ind.theme;
+
+  const datasetInfo = (ind.datasetInfo || 'No dataset info available.').replace(/</g,'&lt;');
+  const dashboardLink = ind.dashboardLink || '#';
+  const cls = classificationClass(ind.progress.classification);
+  const displayName = cardDisplayName(ind.name);
+
+  card.innerHTML = `
+    <div class="kpi-head">
+      <div class="kpi-name">${displayName}</div>
+      <div class="kpi-actions">
+        <a class="kpi-link" href="${dashboardLink}" target="_blank" rel="noopener noreferrer">View Dashboard</a>
+        <span class="kpi-info" tabindex="0" aria-label="Dataset info">
+          <span class="kpi-info-icon"></span>
+          <div class="kpi-info-tooltip">${datasetInfo}</div>
+        </span>
+      </div>
+    </div>
+    <div class="kpi-desc">${ind.definition || ''}</div>
+    <div class="kpi-bottom">
+      <div class="kpi-value">${headlineValue(ind)}</div>
+      <div class="kpi-badge-cell">
+        <div class="kpi-classification ${cls}" tabindex="0" aria-label="Progress classification">${ind.progress.classification}</div>
+      </div>
+      <div class="kpi-year-note">${yearNoteText(ind)}</div>
+      <div class="kpi-trend-period">${ind.progress.assessmentPeriod}</div>
+    </div>
+  `;
+
+  const badge = card.querySelector('.kpi-classification');
+  badge.addEventListener('mouseenter', ()=> showProgressPopover(ind, badge));
+  badge.addEventListener('mouseleave', hideProgressPopover);
+  badge.addEventListener('focus', ()=> showProgressPopover(ind, badge));
+  badge.addEventListener('blur', hideProgressPopover);
+
+  return card;
+}
+
+function buildSections(){
+  const container = document.getElementById('sections');
+  ["Economy","Society","Environment"].forEach(theme=>{
+    const items = RAW_DATA.filter(d=>d.theme===theme);
+    const section = document.createElement('div');
+    section.className = 'theme-section';
+    section.dataset.theme = theme;
+    section.innerHTML = `
+      <div class="theme-flag">${theme}</div>
+      <div class="theme-body">
+        <div class="theme-heading">
+          <h2>${theme}</h2>
+          <div class="theme-desc">${THEME_DESC[theme]}</div>
+        </div>
+        <div class="card-grid"></div>
+      </div>
+    `;
+    const grid = section.querySelector('.card-grid');
+    items.forEach(ind=> grid.appendChild(makeCard(ind)));
+    container.appendChild(section);
+  });
+}
+
+function applyFilters(){
+  const activeTab = document.querySelector('.tab.active').dataset.theme;
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  let anyVisible = false;
+
+  document.querySelectorAll('.theme-section').forEach(section=>{
+    const theme = section.dataset.theme;
+    const themeMatch = activeTab === 'all' || activeTab === theme;
+    let sectionHasVisible = false;
+    section.querySelectorAll('.kpi-card').forEach(card=>{
+      const nameMatch = !q || card.dataset.name.includes(q);
+      const visible = themeMatch && nameMatch;
+      card.style.display = visible ? '' : 'none';
+      if(visible) sectionHasVisible = true;
+    });
+    section.style.display = sectionHasVisible ? '' : 'none';
+    if(sectionHasVisible) anyVisible = true;
+  });
+
+  document.getElementById('summaryStrip').style.display = (activeTab === 'all' && !q) ? 'grid' : 'none';
+  document.getElementById('emptyState').style.display = anyVisible ? 'none' : 'block';
+}
+
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tab');
+  if(!btn) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+});
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+buildSummary();
+buildSections();
+applyFilters();
+</script>
+
+</body>
+</html>
